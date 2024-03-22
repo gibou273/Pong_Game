@@ -1,5 +1,7 @@
 from turtle import Turtle, Screen
 from paddle import Paddle
+from ball import Ball
+import time
 
 window = Screen()
 window.setup(width=800, height=600)
@@ -10,26 +12,22 @@ window.tracer(0)
 
 right_paddle = Paddle(350, 0)
 left_paddle = Paddle(-350, 0)
-
-
-def paddle_up(paddle):
-    new_y = paddle.ycor() + 20
-    paddle.goto(paddle.xcor(), new_y)
-
-
-def paddle_down(paddle):
-    new_y = paddle.ycor() - 20
-    paddle.goto(paddle.xcor(), new_y)
-
+ball = Ball()
 
 window.listen()
-window.onkey(key="Up", fun=lambda: paddle_up(right_paddle))
-window.onkey(key="Down", fun=lambda: paddle_down(right_paddle))
-window.onkey(key="w", fun=lambda: paddle_up(left_paddle))
-window.onkey(key="s", fun=lambda: paddle_down(left_paddle))
+window.onkey(key="Up", fun=right_paddle.move_up)
+window.onkey(key="Down", fun=right_paddle.move_down)
+window.onkey(key="w", fun=left_paddle.move_up)
+window.onkey(key="s", fun=left_paddle.move_down)
 
 is_playing = True
 while is_playing:
+    time.sleep(0.1)
     window.update()
+    ball.move()
+    # Detect collision with top wall of the game window
+    if ball.ycor() > 280 or ball.ycor() < -280:
+        ball.bounce()
+
 
 window.exitonclick()
